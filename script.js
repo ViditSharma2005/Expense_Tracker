@@ -11,12 +11,6 @@ document.addEventListener('DOMContentLoaded', () => {
     const themeToggleBtn = document.getElementById('themeToggle');
     const resetBtn = document.getElementById('resetBtn');
 
-    // DOM Elements - Sections
-    const heroSection = document.querySelector('.hero-content');
-    const transactionSection = document.querySelector('.transaction');
-    const searchSection = document.querySelector('.search-trans');
-    const budgetSection = document.querySelector('.budget-section');
-
     // DOM Elements - Forms & Inputs
     const transForm = document.getElementById('trans-form');
     const descInput = document.getElementById('descInput');
@@ -44,39 +38,26 @@ document.addEventListener('DOMContentLoaded', () => {
     /* ==========================================
        1. NAVIGATION & SECTION SWITCHING
        ========================================== */
-    function showSection(targetId) {
-        heroSection.classList.remove('active-section');
-        transactionSection.classList.remove('active-section');
-        searchSection.classList.remove('active-section');
-        budgetSection.classList.remove('active-section');
-
-        if (targetId === 'dashboard') {
-            heroSection.classList.add('active-section');
-        } else if (targetId === 'transactions') {
-            transactionSection.classList.add('active-section');
-            searchSection.classList.add('active-section');
-        } else if (targetId === 'budget') {
-            budgetSection.classList.add('active-section');
-        }
-    }
-
-    showSection('dashboard');
-
     navLinks.forEach(link => {
         link.addEventListener('click', (e) => {
             e.preventDefault();
             const targetId = link.getAttribute('href').replace('#', '');
-            showSection(targetId);
+            const target = document.getElementById(targetId);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
 
             if (navMenu.classList.contains('active')) {
                 navMenu.classList.remove('active');
+                navToggle.setAttribute('aria-expanded', 'false');
             }
         });
     });
 
     if (navToggle) {
         navToggle.addEventListener('click', () => {
-            navMenu.classList.toggle('active');
+            const isOpen = navMenu.classList.toggle('active');
+            navToggle.setAttribute('aria-expanded', String(isOpen));
         });
     }
 
@@ -126,7 +107,7 @@ document.addEventListener('DOMContentLoaded', () => {
         const selectedType = typeSelect.value;
         categorySelect.innerHTML = '<option value="" disabled selected>Select Category</option>';
 
-        const categories = selectedType === 'income' 
+        const categories = selectedType === 'income'
             ? ['Salary', 'Pocket Money', 'Freelance', 'Business', 'Investment']
             : ['Food', 'Travel', 'Shopping', 'Bills', 'Entertainment'];
 
@@ -142,7 +123,7 @@ document.addEventListener('DOMContentLoaded', () => {
     function updateCategoryOptions() {
         filterCategory.innerHTML = '<option value="all">All Categories</option>';
         const allCategories = ['salary', 'pocket-money', 'freelance', 'business', 'investment', 'food', 'travel', 'shopping', 'bills', 'entertainment'];
-        
+
         allCategories.forEach(cat => {
             const option = document.createElement('option');
             option.value = cat;
@@ -252,10 +233,40 @@ document.addEventListener('DOMContentLoaded', () => {
     transForm.addEventListener('submit', (e) => {
         e.preventDefault();
 
+        const amount = parseFloat(amountInput.value);
+        const income = transactions
+            .filter(t => t.type === 'income')
+            .reduce((sum, t) => sum + t.amount, 0);
+        const expenses = transactions
+            .filter(t => t.type === 'expense')
+            .reduce((sum, t) => sum + t.amount, 0);
+        const availableBalance = income - expenses;
+
+        if (!Number.isFinite(amount) || amount <= 0) {
+            alert('Enter an amount greater than zero.');
+            return;
+        }
+
+        if (typeSelect.value === 'expense' && monthlyBudget <= 0) {
+            alert('Set a budget before adding an expense.');
+            return;
+        }
+
+        if (typeSelect.value === 'expense' && amount > availableBalance) {
+            alert(`This expense is greater than your available balance of ₹${availableBalance.toFixed(2)}.`);
+            return;
+        }
+
+        const remainingBudget = monthlyBudget - expenses;
+        if (typeSelect.value === 'expense' && amount > remainingBudget) {
+            alert(`This expense is greater than your remaining budget of ₹${remainingBudget.toFixed(2)}.`);
+            return;
+        }
+
         const newTransaction = {
             id: Date.now(),
             description: descInput.value.trim(),
-            amount: parseFloat(amountInput.value),
+            amount,
             type: typeSelect.value,
             category: categorySelect.value
         };

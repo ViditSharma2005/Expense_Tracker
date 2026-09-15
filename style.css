@@ -6,7 +6,7 @@
     --clr-dark-card: #17253E;
     --clr-light-bg: #ECF0F3;
     --clr-light-card: #FFFFFF;
-    
+
     --clr-green: #05DA93;
     --clr-blue: #206398;
     --clr-red: #EE5D50;
@@ -39,10 +39,41 @@ body.dark-theme {
     font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
+html {
+    scroll-behavior: smooth;
+}
+
 body {
     background-color: var(--bg-color);
     color: var(--text-primary);
     transition: var(--transition);
+    min-width: 320px;
+}
+
+button,
+input,
+select {
+    font: inherit;
+}
+
+button:focus-visible,
+a:focus-visible,
+input:focus-visible,
+select:focus-visible {
+    outline: 3px solid var(--clr-green);
+    outline-offset: 2px;
+}
+
+.visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
 }
 
 /* ==========================================
@@ -76,8 +107,8 @@ body {
 }
 
 /* 3-Line Hamburger Icon */
-.hamburger, 
-.hamburger::before, 
+.hamburger,
+.hamburger::before,
 .hamburger::after {
     display: block;
     width: 26px;
@@ -91,7 +122,7 @@ body {
     position: relative;
 }
 
-.hamburger::before, 
+.hamburger::before,
 .hamburger::after {
     content: '';
     position: absolute;
@@ -123,6 +154,16 @@ body {
     cursor: pointer;
 }
 
+.reset-btn {
+    background: var(--clr-red);
+    color: #fff;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 20px;
+    font-weight: 700;
+    cursor: pointer;
+}
+
 /* ==========================================
    MAIN CONTENT & RESPONSIVE GRID
    ========================================== */
@@ -133,6 +174,17 @@ main {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+}
+
+.hero-page p {
+    margin-top: 0.5rem;
+    color: var(--text-muted);
+}
+
+.transaction,
+.search-trans,
+.budget-section {
+    scroll-margin-top: 6rem;
 }
 
 /* Stats Cards Grid (Default Desktop: 4 columns) */
@@ -162,6 +214,7 @@ main {
     display: flex;
     align-items: center;
     gap: 0.4rem;
+    margin-top: 0.5rem;
 }
 
 .stat-card:nth-child(1) p { color: var(--clr-blue); }
@@ -193,7 +246,7 @@ main {
     width: 100%;
 }
 
-.form-row input, 
+.form-row input,
 .form-row select,
 #budgetForm input,
 .search-controls input,
@@ -210,7 +263,7 @@ main {
 /* Row 1: Description and Amount take equal width */
 .row-top input {
     flex: 1;
-    width: calc(45vw - 1.5rem);
+    min-width: 0;
 }
 
 /* Row 2: Type and Category */
@@ -227,12 +280,38 @@ button[type="submit"] {
     font-weight: 800;
     cursor: pointer;
     align-self: flex-start;
+    transition: var(--transition);
 }
-.search-controls    {
+
+button[type="submit"]:hover,
+.reset-btn:hover,
+#themeToggle:hover {
+    transform: translateY(-1px);
+    filter: brightness(1.05);
+}
+
+.search-controls {
     display: flex;
     align-items: center;
-    gap: 2rem;
+    gap: 1rem;
     margin-top: 1rem;
+}
+
+.search-controls input,
+.search-controls select {
+    flex: 1 1 12rem;
+    min-width: 0;
+}
+
+#searchButton {
+    flex: 0 0 auto;
+}
+
+#transactionList {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-top: 1.5rem;
 }
 
 /* Budget Section Centered */
@@ -244,6 +323,11 @@ button[type="submit"] {
     display: flex;
     justify-content: center;
     gap: 1rem;
+    align-items: stretch;
+}
+
+#budgetForm input {
+    width: min(100%, 22rem);
 }
 
 .budget-details {
@@ -263,10 +347,23 @@ button[type="submit"] {
 }
 
 /* ==========================================
-   RESPONSIVE MEDIA BREAKPOINTS (MOBILE & TABLET)
+   RESPONSIVE MEDIA BREAKPOINTS
    ========================================== */
+@media screen and (max-width: 900px) {
+    .header {
+        padding-inline: 1.25rem;
+    }
+
+    main {
+        margin-block: 1.5rem;
+    }
+
+    .stats-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
 @media screen and (max-width: 768px) {
-    /* 1. Hamburger menu active */
     .nav-toggle {
         display: block;
     }
@@ -292,34 +389,83 @@ button[type="submit"] {
         align-items: flex-start;
     }
 
-    /* 2. Stats grid: Exactly 2 cards per row using viewport width */
-    .stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-        gap: 2vw;
+    .nav a,
+    #themeToggle,
+    .reset-btn {
+        display: block;
+        width: 100%;
+        text-align: left;
     }
 
-    .stat-card {
-        width: calc(45vw - 1rem);
+    .nav a {
+        padding: 0.25rem 0;
     }
 
-    /* 3. Transaction Inputs: Description & Amount side-by-side using VW */
-    .row-top {
-        display: flex;
-        flex-direction: row;
-        gap: 2vw;
-    }
-
-    .row-top input {
-        width: 44vw;
-    }
-
-    .row-bottom {
-        display: flex;
+    .search-controls {
+        align-items: stretch;
         flex-direction: column;
-        gap: 1rem;
     }
 
-    button[type="submit"] {
+    .search-controls input,
+    .search-controls select,
+    #searchButton {
+        width: 100%;
+        flex-basis: auto;
+    }
+
+    #budgetForm {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    #budgetForm input,
+    #budgetForm button {
+        width: 100%;
+    }
+}
+
+@media screen and (max-width: 540px) {
+    .header {
+        padding: 1rem;
+    }
+
+    .expense-tracker {
+        font-size: 1.25rem;
+    }
+
+    main {
+        padding-inline: 1rem;
+        gap: 1.25rem;
+    }
+
+    .card,
+    .search-trans {
+        padding: 1rem;
+    }
+
+    .stats-grid,
+    .form-row,
+    .budget-details {
+        grid-template-columns: 1fr;
+        flex-direction: column;
+    }
+
+    .form-row {
+        gap: 0.75rem;
+    }
+
+    .stat-card p {
+        font-size: 1.35rem;
+    }
+
+    .transaction-card {
+        align-items: flex-start !important;
+        flex-direction: column;
+        gap: 0.75rem;
+    }
+
+    .transaction-card > div:last-child {
+        justify-content: space-between;
         width: 100%;
     }
 }

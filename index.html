@@ -11,9 +11,9 @@
 
     <header class="header">
         <h1 class="expense-tracker">Expense Tracker</h1>
-        
+
         <!-- Hamburger Menu Button -->
-        <button class="nav-toggle" id="navToggle" aria-label="toggle navigation">
+        <button class="nav-toggle" id="navToggle" type="button" aria-label="Toggle navigation" aria-expanded="false" aria-controls="navMenu">
             <span class="hamburger"></span>
         </button>
 
@@ -24,7 +24,7 @@
                 <li><a href="#budget">Budget</a></li>
                 <li><button id="themeToggle" type="button">Light Mode</button></li>
                 <!-- Feature 1: Reset Button in Nav Bar -->
-                <li><button id="resetBtn" type="button" style="background: var(--clr-red); color: white; border: none; padding: 0.5rem 1rem; border-radius: 20px; font-weight: 700; cursor: pointer;">Reset Data</button></li>
+                <li><button id="resetBtn" class="reset-btn" type="button">Reset Data</button></li>
             </ul>
         </nav>
     </header>
@@ -36,7 +36,7 @@
                 <h2>Welcome to Your Expense Tracker</h2>
                 <p>Track your expenses and manage your budget with ease.</p>
             </div>
-            
+
             <div class="stats-grid">
                 <div class="stat-card">
                     <h4>Total Balance</h4>
@@ -64,8 +64,10 @@
                 <form id="trans-form">
                     <!-- Row 1: Description & Amount -->
                     <div class="form-row row-top">
-                        <input type="text" id="descInput" placeholder="Description" required>
-                        <input type="number" id="amountInput" placeholder="Amount" step="0.01" required>
+                        <label class="visually-hidden" for="descInput">Transaction description</label>
+                        <input type="text" id="descInput" placeholder="Description" autocomplete="off" required>
+                        <label class="visually-hidden" for="amountInput">Transaction amount</label>
+                        <input type="number" id="amountInput" placeholder="Amount" min="0.01" step="0.01" required>
                     </div>
                     <!-- Row 2: Type & Category -->
                     <div class="form-row row-bottom">
@@ -87,7 +89,7 @@
         <section class="search-trans">
             <h3>Search Transactions</h3>
             <!-- Search Form with Description, Type, Category filters and Submit button -->
-            <form id="searchForm" class="search-controls" style="display: flex; gap: 1rem; flex-wrap: wrap;">
+            <form id="searchForm" class="search-controls">
                 <input type="text" id="searchInput" placeholder="Search by description">
                 <select id="filterType">
                     <option value="all">All Types</option>
@@ -102,7 +104,7 @@
             </form>
 
             <!-- Styled Transaction Cards Container -->
-            <div class="show-trans" id="transactionList" style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;"></div>
+            <div class="show-trans" id="transactionList"></div>
         </section>
 
         <!-- Budget Management Section -->
@@ -110,7 +112,8 @@
             <div class="card">
                 <h3>Budget Management</h3>
                 <form id="budgetForm">
-                    <input type="number" id="budgetInput" placeholder="Enter Budget Amount" required>
+                        <label class="visually-hidden" for="budgetInput">Budget amount</label>
+                        <input type="number" id="budgetInput" placeholder="Enter Budget Amount" min="0" step="0.01" required>
                     <button type="submit">Set Budget</button>
                 </form>
                 <div class="budget-details">
@@ -122,7 +125,7 @@
     </main>
 
     <footer class="footer">
-        <p>&copy; 2026 Expense Calculator. All rights reserved.</p>
+        <p>&copy; 2026 Expense Tracker. All rights reserved.</p>
     </footer>
 
     <script src="script.js"></script>
